@@ -1,0 +1,17 @@
+flowchart TD
+  U[Reviewer uploads PDFs and selects category] --> V[RULE: file checks - type, size, readable text]
+  V --> L[RULE: load admin criteria + version number from database]
+  L --> X[AI: extract facts from proposal as JSON with evidence quotes]
+  X --> S[RULE: validate JSON schema, flag missing fields and injection patterns]
+  S -->|suspicious or missing| F[FLAGGED for human review]
+  S --> M[RULE: mandatory pass/fail check]
+  M -->|fail| I[INELIGIBLE with reason]
+  M -->|pass| W[CODE: score price, timeline, warranty by formula]
+  W --> Q[AI: score experience and team using fixed rubric]
+  Q --> T[RULE: weighted total and sort]
+  T --> R[Ranked list with reason per proposal]
+  R --> H{HUMAN: reviews flags, can override with note}
+  F --> H
+  I --> H
+  H --> A[HUMAN makes final award decision]
+  A --> G[(Audit log: inputs, prompt version, criteria version, scores, overrides)]
